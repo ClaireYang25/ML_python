@@ -1,0 +1,62 @@
+##1.自顶向下的备忘录法；2.自底向上。
+def febonacci(n):
+    if n<=0:return 0
+    elif n==1:return 1
+    return febonacci(n-1)+febonacci(n-2)
+    
+ ## 1
+ def dynamic_fabonacci(n):
+    Memo=[-1]*n
+    if n<=0:return n
+    return fib(n-1,Memo)
+def fib(n,Memo=[]):
+    Memo=list(Memo)
+    if Memo[n]!=-1:return Memo[n]    #如果之前已经算过了，则直接读取，无需重复计算
+    if n<=1:Memo[n]=1   #前2位记录为1
+    else:Memo[n]=fib(n-1,Memo)+fib(n-2,Memo)   #递归，区分与纯递归方法的区别，这里避免了很多重复计算
+    return Memo[n]
+    
+ ##2
+ 
+ def dynamic_fabonacci(n):
+        flist=[-1]*n;flist[0]=flist[1]=1
+        if n<=0:return n
+        for i in range(2,n):
+            flist[i]=flist[i-1]+flist[i-2]   #基于之前列表已经计算出的结果基础之上计算后续
+        return flist[n-1]
+        
+        
+  ## summary
+  def cut1(n):    #第一种方法，递归
+    l = []
+    if n<=1:return n
+    p=10 if n>10 else n
+    for i in range(p):
+        l.append(l2[i]+cut1(n-l1[i]))
+    q=np.max(l)
+    return q
+
+def cut2(n):  #第二种方法，动态规划，自顶向下备忘录法
+    t=[-1]*n;l=[]
+    if n<1:return n
+    if t[n-1]!=-1:return t[n-1]
+    p=10 if n>10 else n
+    for i in range(p):
+        l.append(l2[i]+cut2(n-l1[i]))
+        t[n-1]=np.max(l)
+    return t[n-1]
+'''自顶向下的备忘录其实就是在递归的过程中记录下已经调用过的子函数的值'''
+
+def cut3(n):   #第三种方法，自底向上的动态规划法
+    t=[-1]*n;l=[]
+    if n<1:return 0
+    for i in range(n):    #求出每个长度下最优分割方案，并记录到数组t中
+        p = 10 if i >= 10 else i+1
+        for j in range(p):
+            if i ==j:l.append(l2[j])
+            else:l.append(l2[j]+t[i-l1[j]])   #遍历分割方案
+        t[i]=np.max(l)   #记录最优方案
+        l=[]   #将列表清空，重新下一轮
+    return t[n-1]
+'''自底向上的方法首先会求出小于n时每一个长度对应的最优解，在此基础之上再算出长度为n时的最优解，
+这里属于最优子结构问题：一个问题取得最优解的时候，它的子问题也一定要取得最优解'''
